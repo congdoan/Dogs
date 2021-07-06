@@ -43,6 +43,13 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        arguments?.let {
+            val detailFragmentArgs = DetailFragmentArgs.fromBundle(it)
+            val dogId = detailFragmentArgs.dogUuid
+            val dogName = detailFragmentArgs.dogName
+            textView2.text = "$dogId, $dogName"
+        }
+
         buttonList.setOnClickListener {
             val action = DetailFragmentDirections.actionListFragment()
             Navigation.findNavController(it).navigate(action)
