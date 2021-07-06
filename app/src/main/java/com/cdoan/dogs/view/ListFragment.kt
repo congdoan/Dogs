@@ -40,16 +40,6 @@ class ListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        buttonDetail.setOnClickListener {
-            val action = ListFragmentDirections.actionDetailFragment()
-            action.dogUuid = 6
-            Navigation.findNavController(it).navigate(action)
-        }
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of
