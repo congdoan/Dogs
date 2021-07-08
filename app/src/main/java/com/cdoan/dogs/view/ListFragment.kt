@@ -74,15 +74,14 @@ class ListFragment : Fragment() {
         })
 
         listViewModel.loading.observe(this, Observer {
-            it?.let {
-                if (it) {
+            it?.let { isLoading ->
+                if (isLoading) {
                     loadingView.visibility = View.VISIBLE
                     recyclerView.visibility = View.GONE
                     listError.visibility = View.GONE
                 } else {
                     loadingView.visibility = View.GONE
                     recyclerView.visibility = View.VISIBLE
-                    listError.visibility = View.VISIBLE
                 }
             }
         })

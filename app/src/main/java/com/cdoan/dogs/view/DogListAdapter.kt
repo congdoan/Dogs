@@ -27,7 +27,7 @@ class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
-        holder.view.dogName.text = dogList[position].dogBreed
+        holder.view.name.text = dogList[position].dogBreed
         holder.view.lifespan.text = dogList[position].lifespan
     }
 
