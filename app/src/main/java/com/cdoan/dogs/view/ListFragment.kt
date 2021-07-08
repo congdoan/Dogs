@@ -23,6 +23,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ListFragment : Fragment() {
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -61,30 +62,28 @@ class ListFragment : Fragment() {
     }
 
     private fun observeListViewModel() {
-        listViewModel.dogs.observe(this, Observer {
-            it?.let {
-                dogListAdapter.updateDogList(it)
-            }
-        })
+        listViewModel.data.observe(this) { state ->
+            if (state == null) return@observe
+            when (state) {
+                is ListViewModel.LoadStateSuccess -> {
+                    dogListAdapter.updateDogList(state.dogs)
 
-        listViewModel.loadError.observe(this, Observer {
-            it?.let {
-                listError.visibility = if (it) View.VISIBLE else View.GONE
-            }
-        })
-
-        listViewModel.loading.observe(this, Observer {
-            it?.let { isLoading ->
-                if (isLoading) {
-                    loadingView.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                    listError.visibility = View.GONE
-                } else {
                     loadingView.visibility = View.GONE
                     recyclerView.visibility = View.VISIBLE
+                    errorView.visibility = View.GONE
+                }
+                is ListViewModel.LoadStateError -> {
+                    loadingView.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
+                    errorView.visibility = View.VISIBLE
+                }
+                is ListViewModel.LoadStateLoading -> {
+                    loadingView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                    errorView.visibility = View.GONE
                 }
             }
-        })
+        }
     }
 
     companion object {

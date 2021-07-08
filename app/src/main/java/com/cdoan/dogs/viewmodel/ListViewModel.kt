@@ -6,18 +6,21 @@ import com.cdoan.dogs.model.DogBreed
 
 class ListViewModel : ViewModel() {
 
-    val dogs = MutableLiveData<List<DogBreed>>()
-    val loadError = MutableLiveData<Boolean>()
-    val loading = MutableLiveData<Boolean>()
+    sealed class LoadState
+    object LoadStateLoading : LoadState()
+    object LoadStateError : LoadState()
+    class LoadStateSuccess(val dogs: List<DogBreed>) : LoadState()
+
+    val data = MutableLiveData<LoadState>()
 
     fun refresh() {
-        dogs.value = listOf(
-            DogBreed("1", "Corgi", "15 years"),
-            DogBreed("2", "Labrador", "10 years"),
-            DogBreed("3", "Rottweiler", "20 years")
+        data.value = LoadStateSuccess(
+            dogs = listOf(
+                DogBreed("1", "Corgi", "15 years"),
+                DogBreed("2", "Labrador", "10 years"),
+                DogBreed("3", "Rottweiler", "20 years")
+            )
         )
-        loadError.value = false
-        loading.value = false
     }
 
 }
