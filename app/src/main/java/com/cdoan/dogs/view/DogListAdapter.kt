@@ -20,7 +20,9 @@ class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_dog, parent)
+        // java.lang.IllegalStateException: ViewHolder views must not be attached when created.
+        // Ensure that you are not passing 'true' to the attachToRoot parameter of LayoutInflater.inflate(..., boolean attachToRoot)
+        val view = inflater.inflate(R.layout.item_dog, parent, false)
         return DogViewHolder(view)
     }
 
