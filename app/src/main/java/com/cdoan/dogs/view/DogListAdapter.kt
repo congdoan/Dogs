@@ -3,6 +3,7 @@ package com.cdoan.dogs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.cdoan.dogs.R
 import com.cdoan.dogs.model.DogBreed
@@ -27,8 +28,13 @@ class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
-        holder.view.name.text = dogList[position].dogBreed
-        holder.view.lifespan.text = dogList[position].lifespan
+        with(holder.view) {
+            name.text = dogList[position].dogBreed
+            lifespan.text = dogList[position].lifespan
+            setOnClickListener {
+                Navigation.findNavController(it).navigate(ListFragmentDirections.actionDetailFragment())
+            }
+        }
     }
 
     override fun getItemCount() = dogList.size
