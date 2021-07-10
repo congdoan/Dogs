@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cdoan.dogs.R
@@ -72,7 +71,7 @@ class ListFragment : Fragment() {
                     recyclerView.visibility = View.VISIBLE
                     errorView.visibility = View.GONE
                 }
-                is ListViewModel.LoadStateError -> {
+                is ListViewModel.LoadStateFailure -> {
                     loadingView.visibility = View.GONE
                     recyclerView.visibility = View.GONE
                     errorView.visibility = View.VISIBLE
