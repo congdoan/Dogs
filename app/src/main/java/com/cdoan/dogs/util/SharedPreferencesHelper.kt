@@ -9,7 +9,7 @@ class SharedPreferencesHelper {
 
     companion object {
         private const val PREF_TIME = "Pref Time"
-        private var prefs: SharedPreferences? = null
+        private lateinit var prefs: SharedPreferences
 
         private var instance: SharedPreferencesHelper? = null
         private val LOCK = Any()
@@ -25,9 +25,11 @@ class SharedPreferencesHelper {
     }
 
     fun saveUpdateTime(time: Long) {
-        prefs?.edit(commit = true) {
+        prefs.edit(commit = true) {
             putLong(PREF_TIME, time)
         }
     }
+
+    fun getUpdateTime() = prefs.getLong(PREF_TIME, 0L)
 
 }

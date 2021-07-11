@@ -2,6 +2,7 @@ package com.cdoan.dogs.viewmodel
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cdoan.dogs.model.DogBreed
@@ -27,9 +28,24 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
     private val disposable = CompositeDisposable()
 
     private val prefHelper = SharedPreferencesHelper(getApplication())
+    private val refreshTime = 5 * 60 * 1_000_000_000L
 
     fun refresh() {
-        fetchFromRemote()
+        val updateTime = prefHelper.getUpdateTime()
+        if (updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
+            fetchFromLocal()
+        } else {
+            fetchFromRemote()
+        }
+    }
+
+    private fun fetchFromLocal() {
+        launch {
+            val dogs = DogDatabase(getApplication()).dogDao().getAllDogs()
+            dogsRetrieved(dogs)
+
+            Toast.makeText(getApplication(), "Dogs Retrieved from database", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun fetchFromRemote() {
@@ -40,6 +56,8 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
                 .subscribeWith(object : DisposableSingleObserver<List<DogBreed>>() {
                     override fun onSuccess(dogs: List<DogBreed>) {
                         storeDogsLocally(dogs)
+
+                        Toast.makeText(getApplication(), "Dogs Retrieved from endpoint", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onError(error: Throwable) {
