@@ -49,6 +49,12 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        swipeRefreshLayout.setOnRefreshListener {
+            listViewModel.refreshBypassCache {
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
+
         listViewModel = ViewModelProviders.of(this).get(ListViewModel::class.java)
         listViewModel.refresh()
 

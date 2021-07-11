@@ -30,6 +30,10 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
     private val prefHelper = SharedPreferencesHelper(getApplication())
     private val refreshTime = 5 * 60 * 1_000_000_000L
 
+    fun refreshBypassCache(completionHandler: () -> Unit) {
+        fetchFromRemote(completionHandler)
+    }
+
     fun refresh() {
         val updateTime = prefHelper.getUpdateTime()
         if (updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
@@ -48,7 +52,7 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private fun fetchFromRemote() {
+    private fun fetchFromRemote(completionHandler: (() -> Unit)? = null) {
         disposable.add(
             dogsApiService.getDogs()
                 .subscribeOn(Schedulers.newThread())
@@ -56,12 +60,14 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
                 .subscribeWith(object : DisposableSingleObserver<List<DogBreed>>() {
                     override fun onSuccess(dogs: List<DogBreed>) {
                         storeDogsLocally(dogs)
+                        completionHandler?.invoke()
 
                         Toast.makeText(getApplication(), "Dogs Retrieved from endpoint", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onError(error: Throwable) {
                         data.value = LoadStateFailure(error)
+                        completionHandler?.invoke()
 
                         Log.e(this.javaClass.simpleName, "getDogs error $error")
                     }
