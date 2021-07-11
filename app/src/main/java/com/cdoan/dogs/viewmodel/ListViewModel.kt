@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.cdoan.dogs.model.DogBreed
 import com.cdoan.dogs.model.DogDatabase
 import com.cdoan.dogs.model.DogsApiService
+import com.cdoan.dogs.util.SharedPreferencesHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -24,6 +25,8 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
 
     private val dogsApiService = DogsApiService()
     private val disposable = CompositeDisposable()
+
+    private val prefHelper = SharedPreferencesHelper(getApplication())
 
     fun refresh() {
         fetchFromRemote()
@@ -59,6 +62,8 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
 
             dogsRetrieved(dogs)
         }
+
+        prefHelper.saveUpdateTime(System.nanoTime())
     }
 
     private fun dogsRetrieved(dogs: List<DogBreed>) {
