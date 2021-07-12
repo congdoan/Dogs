@@ -9,7 +9,6 @@ import com.cdoan.dogs.R
 import com.cdoan.dogs.model.DogBreed
 import com.cdoan.dogs.util.getProcessDrawable
 import com.cdoan.dogs.util.loadImage
-import kotlinx.android.synthetic.main.fragment_detail.view.*
 import kotlinx.android.synthetic.main.item_dog.view.*
 
 class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter<DogListAdapter.DogViewHolder>() {
@@ -34,13 +33,13 @@ class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter
             val dog = dogList[position]
             name.text = dog.dogBreed
             lifespan.text = dog.lifespan
-            imageView.loadImage(
-                uri = dog.imageUrl,
-                processDrawable = getProcessDrawable(imageView.context)
-            )
+            imageView.loadImage(dog.imageUrl)
 
             setOnClickListener {
-                Navigation.findNavController(it).navigate(ListFragmentDirections.actionDetailFragment())
+                val action = ListFragmentDirections.actionDetailFragment().apply {
+                    dogUuid = dogList[position].uuid
+                }
+                Navigation.findNavController(it).navigate(action)
             }
         }
     }

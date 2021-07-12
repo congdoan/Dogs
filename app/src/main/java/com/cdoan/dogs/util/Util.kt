@@ -6,6 +6,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.cdoan.dogs.R
+import kotlinx.android.synthetic.main.item_dog.view.*
 
 fun getProcessDrawable(context: Context) = CircularProgressDrawable(context).apply {
     strokeWidth = 10f
@@ -13,7 +14,10 @@ fun getProcessDrawable(context: Context) = CircularProgressDrawable(context).app
     start()
 }
 
-fun ImageView.loadImage(uri: String?, processDrawable: CircularProgressDrawable) {
+fun ImageView.loadImage(
+    uri: String?,
+    processDrawable: CircularProgressDrawable = getProcessDrawable(this.context)
+) {
     val options = RequestOptions()
                     .placeholder(processDrawable)
                     .error(R.mipmap.ic_launcher_dogs)

@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.cdoan.dogs.R
+import com.cdoan.dogs.util.loadImage
 import com.cdoan.dogs.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.item_dog.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,13 +49,16 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val dogUuid = DetailFragmentArgs.fromBundle(arguments!!).dogUuid
+
         detailViewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
-        detailViewModel.fetchData()
+        detailViewModel.fetchData(dogUuid)
         observeDetailViewModel()
     }
 
     private fun observeDetailViewModel() {
         detailViewModel.data.observe(this) {
+            dogImage.loadImage(it.imageUrl)
             dogName.text = it.dogBreed
             dogPurpose.text = it.bredFor
             dogTemperament.text = it.temperament
