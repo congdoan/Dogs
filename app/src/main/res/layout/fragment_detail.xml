@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="dog"
+            type="com.cdoan.dogs.model.DogBreed" />
+    </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -10,7 +15,7 @@
 
         <ImageView
             android:id="@+id/dogImage"
-            android:src="@mipmap/ic_launcher_dogs"
+            android:imageUrl="@{dog.imageUrl}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -19,7 +24,7 @@
 
         <TextView
             android:id="@+id/dogName"
-            android:text="Dog Name"
+            android:text="@{dog.dogBreed}"
             style="@style/Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +34,7 @@
 
         <TextView
             android:id="@+id/dogPurpose"
-            android:text="Dog Purpose"
+            android:text="@{dog.bredFor}"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +44,7 @@
 
         <TextView
             android:id="@+id/dogTemperament"
-            android:text="Dog Temperament"
+            android:text="@{dog.temperament}"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +54,7 @@
 
         <TextView
             android:id="@+id/dogLifespan"
-            android:text="Dog Lifespan"
+            android:text="@{dog.lifespan}"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
