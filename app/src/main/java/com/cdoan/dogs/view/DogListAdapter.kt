@@ -3,17 +3,18 @@ package com.cdoan.dogs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.cdoan.dogs.R
+import com.cdoan.dogs.databinding.ItemDogBinding
 import com.cdoan.dogs.model.DogBreed
-import com.cdoan.dogs.util.getProcessDrawable
-import com.cdoan.dogs.util.loadImage
 import kotlinx.android.synthetic.main.item_dog.view.*
 
-class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter<DogListAdapter.DogViewHolder>() {
+class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter<DogListAdapter.DogViewHolder>(),
+    DogClickListener {
 
-    class DogViewHolder(var view: View) : RecyclerView.ViewHolder(view)
+    class DogViewHolder(var view: ItemDogBinding) : RecyclerView.ViewHolder(view.root)
 
     fun updateDogList(newDogList: List<DogBreed>) {
         dogList = newDogList
@@ -24,26 +25,22 @@ class DogListAdapter(private var dogList: List<DogBreed>) : RecyclerView.Adapter
         val inflater = LayoutInflater.from(parent.context)
         // java.lang.IllegalStateException: ViewHolder views must not be attached when created.
         // Ensure that you are not passing 'true' to the attachToRoot parameter of LayoutInflater.inflate(..., boolean attachToRoot)
-        val view = inflater.inflate(R.layout.item_dog, parent, false)
+        val view = DataBindingUtil.inflate<ItemDogBinding>(inflater, R.layout.item_dog, parent, false)
         return DogViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
-        with(holder.view) {
-            val dog = dogList[position]
-            name.text = dog.dogBreed
-            lifespan.text = dog.lifespan
-            imageView.loadImage(dog.imageUrl)
-
-            setOnClickListener {
-                val action = ListFragmentDirections.actionDetailFragment().apply {
-                    dogUuid = dogList[position].uuid
-                }
-                Navigation.findNavController(it).navigate(action)
-            }
-        }
+        holder.view.dog = dogList[position]
+        holder.view.listener = this
     }
 
     override fun getItemCount() = dogList.size
+
+    override fun onDogClicked(view: View) {
+        val action = ListFragmentDirections.actionDetailFragment().apply {
+            dogUuid = view.dogId.text.toString().toInt()
+        }
+        Navigation.findNavController(view).navigate(action)
+    }
 
 }
