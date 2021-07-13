@@ -6,12 +6,17 @@
         <variable
             name="dog"
             type="com.cdoan.dogs.model.DogBreed" />
+        
+        <variable
+            name="palette"
+            type="com.cdoan.dogs.model.DogPalette" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.DetailFragment">
+        tools:context=".view.DetailFragment"
+        android:background="@{palette.color}">
 
         <ImageView
             android:id="@+id/dogImage"
