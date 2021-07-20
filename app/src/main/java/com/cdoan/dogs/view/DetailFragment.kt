@@ -66,7 +66,7 @@ class DetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_send_sms -> {
-
+                (activity as MainActivity).checkSmsPermission()
             }
             R.id.action_share -> {
 
@@ -75,6 +75,8 @@ class DetailFragment : Fragment() {
 
         return super.onOptionsItemSelected(item)
     }
+
+    fun onSmsPermissionResult(granted: Boolean) {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
