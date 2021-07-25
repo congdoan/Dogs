@@ -7,7 +7,6 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.cdoan.dogs.R
-import kotlinx.android.synthetic.main.item_dog.view.*
 
 fun getProcessDrawable(context: Context) = CircularProgressDrawable(context).apply {
     strokeWidth = 10f

@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.cdoan.dogs.model.DogBreed
 import com.cdoan.dogs.model.DogDatabase
 import com.cdoan.dogs.model.DogsApiService
