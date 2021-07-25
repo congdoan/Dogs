@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.telephony.SmsManager
 import android.view.*
@@ -76,43 +77,57 @@ class DetailFragment : Fragment() {
                 (activity as MainActivity).checkSmsPermission()
             }
             R.id.action_share -> {
-
+                shareDogInfo()
             }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
+    private fun shareDogInfo() {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "*/*"
+            putExtra(Intent.EXTRA_SUBJECT, "Check out this dog breed")
+            putExtra(Intent.EXTRA_TEXT, currentDog?.nameWithPurpose)
+            putExtra(Intent.EXTRA_STREAM, Uri.parse(currentDog?.imageUrl))
+        }
+        startActivity(
+            Intent.createChooser(intent, "Share with")
+        )
+    }
+
     fun onSmsPermissionResult(granted: Boolean) {
         if (!granted) return
 
-        context?.let {
-            val smsInfo = SmsInfo(
-                "",
-                "${currentDog?.dogBreed} bred for ${currentDog?.bredFor}",
-                currentDog?.imageUrl
-            )
+        val ctx = context
+        val dog = currentDog
+        if (ctx == null || dog == null) return
 
-            val dialogBinding = DataBindingUtil.inflate<SendSmsDialogBinding>(
-                LayoutInflater.from(it),
-                R.layout.send_sms_dialog,
-                null,
-                false
-            )
+        val smsInfo = SmsInfo(
+            "",
+            dog.nameWithPurpose,
+            dog.imageUrl
+        )
 
-            dialogBinding.smsInfo = smsInfo
+        val dialogBinding = DataBindingUtil.inflate<SendSmsDialogBinding>(
+            LayoutInflater.from(ctx),
+            R.layout.send_sms_dialog,
+            null,
+            false
+        )
 
-            AlertDialog.Builder(it)
-                .setView(dialogBinding.root)
-                .setPositiveButton("Send SMS") { _, _ ->
-                    val toText = dialogBinding.smsDestination.text
-                    if (!dialogBinding.smsDestination.text.isNullOrBlank()) {
-                        smsInfo.to = toText.toString()
-                        sendSms(smsInfo)
-                    }
+        dialogBinding.smsInfo = smsInfo
+
+        AlertDialog.Builder(ctx)
+            .setView(dialogBinding.root)
+            .setPositiveButton("Send SMS") { _, _ ->
+                val toText = dialogBinding.smsDestination.text
+                if (!dialogBinding.smsDestination.text.isNullOrBlank()) {
+                    smsInfo.to = toText.toString()
+                    sendSms(smsInfo)
                 }
-                .show()
-        }
+            }
+            .show()
     }
 
     private fun sendSms(smsInfo: SmsInfo) {
@@ -186,3 +201,5 @@ class DetailFragment : Fragment() {
     }
 
 }
+
+private val DogBreed.nameWithPurpose get() = "$dogBreed bred for $bredFor"
