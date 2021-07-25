@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
@@ -13,11 +14,11 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.cdoan.dogs.R
 import com.cdoan.dogs.databinding.FragmentDetailBinding
+import com.cdoan.dogs.databinding.SendSmsDialogBinding
+import com.cdoan.dogs.model.DogBreed
 import com.cdoan.dogs.model.DogPalette
-import com.cdoan.dogs.util.loadImage
+import com.cdoan.dogs.model.SmsInfo
 import com.cdoan.dogs.viewmodel.DetailViewModel
-import kotlinx.android.synthetic.main.fragment_detail.*
-import kotlinx.android.synthetic.main.item_dog.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +38,9 @@ class DetailFragment : Fragment() {
 
     private lateinit var detailViewModel: DetailViewModel
     private lateinit var dataBinding: FragmentDetailBinding
+
+    private var currentDog: DogBreed? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +80,41 @@ class DetailFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun onSmsPermissionResult(granted: Boolean) {}
+    fun onSmsPermissionResult(granted: Boolean) {
+        if (!granted) return
+
+        context?.let {
+            val smsInfo = SmsInfo(
+                "",
+                "${currentDog?.dogBreed} bred for ${currentDog?.bredFor}",
+                currentDog?.imageUrl
+            )
+
+            val dialogBinding = DataBindingUtil.inflate<SendSmsDialogBinding>(
+                LayoutInflater.from(it),
+                R.layout.send_sms_dialog,
+                null,
+                false
+            )
+
+            dialogBinding.smsInfo = smsInfo
+
+            AlertDialog.Builder(it)
+                .setView(dialogBinding.root)
+                .setPositiveButton("Send SMS") { _, _ ->
+                    val toText = dialogBinding.smsDestination.text
+                    if (!dialogBinding.smsDestination.text.isNullOrBlank()) {
+                        smsInfo.to = toText.toString()
+                        sendSms(smsInfo)
+                    }
+                }
+                .show()
+        }
+    }
+
+    private fun sendSms(smsInfo: SmsInfo) {
+        TODO("Not yet implemented")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -91,6 +129,7 @@ class DetailFragment : Fragment() {
     private fun observeDetailViewModel() {
         detailViewModel.data.observe(this) {
             dataBinding.dog = it
+            currentDog = it
 
             it.imageUrl?.let { url ->
                 setBackgroundColor(url)
